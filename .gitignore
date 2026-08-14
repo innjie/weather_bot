@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Kotlin
+*.kotlin_module
+
+# Logs
+*.log
+logs/
+
+# SQLite
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# 환경설정/민감정보
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+
+# IntelliJ (workspace.xml 등은 .idea/.gitignore에서 개별 관리)
+out/
+*.iws
