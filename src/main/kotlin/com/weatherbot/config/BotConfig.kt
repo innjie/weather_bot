@@ -26,4 +26,10 @@ object BotConfig {
     val dbPath: String by lazy {
         dotenv["DB_PATH"] ?: System.getenv("DB_PATH") ?: "./data/weather_bot.db"
     }
+
+    /** 기상청 공공데이터포털 API 키 (단기예보 조회용) */
+    val kmaApiKey: String by lazy { require("KMA_API_KEY") }
+
+    /** 에어코리아 공공데이터포털 API 키 (미세먼지 조회용) */
+    val airKoreaApiKey: String by lazy { require("AIRKOREA_API_KEY") }
 }
