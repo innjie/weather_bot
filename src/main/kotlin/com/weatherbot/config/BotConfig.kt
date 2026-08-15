@@ -21,4 +21,9 @@ object BotConfig {
     val weatherProvider: String by lazy {
         dotenv["WEATHER_PROVIDER"] ?: System.getenv("WEATHER_PROVIDER") ?: "KMA"
     }
+
+    /** SQLite DB 파일 경로. 미지정 시 `./data/weather_bot.db` 사용. */
+    val dbPath: String by lazy {
+        dotenv["DB_PATH"] ?: System.getenv("DB_PATH") ?: "./data/weather_bot.db"
+    }
 }

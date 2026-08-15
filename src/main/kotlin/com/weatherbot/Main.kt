@@ -1,6 +1,7 @@
 package com.weatherbot
 
 import com.weatherbot.config.BotConfig
+import com.weatherbot.db.DatabaseFactory
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.events.session.ReadyEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory
 private val logger = LoggerFactory.getLogger("Main")
 
 fun main() {
+    DatabaseFactory.init()
+
     val jda = JDABuilder.createDefault(BotConfig.discordToken)
         .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
         .addEventListeners(object : ListenerAdapter() {
