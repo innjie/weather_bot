@@ -32,4 +32,7 @@ object BotConfig {
 
     /** 에어코리아 공공데이터포털 API 키 (미세먼지 조회용) */
     val airKoreaApiKey: String by lazy { require("AIRKOREA_API_KEY") }
+
+    /** OpenWeatherMap API 키 */
+    val owmApiKey: String by lazy { require("OWM_API_KEY") }
 }
