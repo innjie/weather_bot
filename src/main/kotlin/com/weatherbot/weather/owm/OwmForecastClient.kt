@@ -9,6 +9,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -23,13 +24,14 @@ data class OwmForecastItem(
 /** OpenWeatherMap 5일/3시간 간격 예보 API(`/data/2.5/forecast`) 호출을 담당한다. */
 object OwmForecastClient {
     private const val BASE_URL = "https://api.openweathermap.org/data/2.5/forecast"
-    private val httpClient = HttpClient.newHttpClient()
+    private val REQUEST_TIMEOUT = Duration.ofSeconds(10)
+    private val httpClient = HttpClient.newBuilder().connectTimeout(REQUEST_TIMEOUT).build()
     private val json = Json { ignoreUnknownKeys = true }
 
     fun fetchForecast(apiKey: String, lat: Double, lon: Double): List<OwmForecastItem> {
         val url = "$BASE_URL?lat=$lat&lon=$lon&units=metric&appid=$apiKey"
 
-        val request = HttpRequest.newBuilder(URI.create(url)).GET().build()
+        val request = HttpRequest.newBuilder(URI.create(url)).timeout(REQUEST_TIMEOUT).GET().build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
         if (response.statusCode() != 200) {

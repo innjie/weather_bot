@@ -10,20 +10,22 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
+import java.time.Duration
 
 data class GeoLocation(val lat: Double, val lon: Double)
 
 /** OpenWeatherMap Geocoding API(`/geo/1.0/direct`) 호출을 담당한다. 지역명을 위도/경도로 변환한다. */
 object OwmGeocodingClient {
     private const val BASE_URL = "https://api.openweathermap.org/geo/1.0/direct"
-    private val httpClient = HttpClient.newHttpClient()
+    private val REQUEST_TIMEOUT = Duration.ofSeconds(10)
+    private val httpClient = HttpClient.newBuilder().connectTimeout(REQUEST_TIMEOUT).build()
     private val json = Json { ignoreUnknownKeys = true }
 
     fun resolve(apiKey: String, location: String): GeoLocation {
         val encodedLocation = URLEncoder.encode("$location,KR", StandardCharsets.UTF_8)
         val url = "$BASE_URL?q=$encodedLocation&limit=1&appid=$apiKey"
 
-        val request = HttpRequest.newBuilder(URI.create(url)).GET().build()
+        val request = HttpRequest.newBuilder(URI.create(url)).timeout(REQUEST_TIMEOUT).GET().build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
         if (response.statusCode() != 200) {

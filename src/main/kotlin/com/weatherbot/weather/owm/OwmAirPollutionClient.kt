@@ -8,18 +8,20 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.time.Duration
 
 /** OpenWeatherMap 대기오염 API(`/data/2.5/air_pollution`) 호출을 담당한다. */
 object OwmAirPollutionClient {
     private const val BASE_URL = "https://api.openweathermap.org/data/2.5/air_pollution"
-    private val httpClient = HttpClient.newHttpClient()
+    private val REQUEST_TIMEOUT = Duration.ofSeconds(10)
+    private val httpClient = HttpClient.newBuilder().connectTimeout(REQUEST_TIMEOUT).build()
     private val json = Json { ignoreUnknownKeys = true }
 
     /** PM10 농도(µg/m³)를 조회한다. */
     fun fetchPm10(apiKey: String, lat: Double, lon: Double): Double {
         val url = "$BASE_URL?lat=$lat&lon=$lon&appid=$apiKey"
 
-        val request = HttpRequest.newBuilder(URI.create(url)).GET().build()
+        val request = HttpRequest.newBuilder(URI.create(url)).timeout(REQUEST_TIMEOUT).GET().build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
         if (response.statusCode() != 200) {

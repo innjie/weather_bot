@@ -53,7 +53,8 @@ object OtherCityWeatherCommand : SlashCommand {
                 event.hook.sendMessage(message).queue()
             } catch (e: Exception) {
                 logger.error("도시날씨 조회 실패: location=$location", e)
-                event.hook.sendMessage("날씨 조회 중 오류가 발생했습니다: ${e.message}").queue()
+                // 내부 예외 메시지(외부 API 응답/URL 등)를 사용자에게 그대로 노출하지 않기 위해 일반화된 메시지만 응답한다.
+                event.hook.sendMessage("날씨 조회 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.").queue()
             }
         }
     }

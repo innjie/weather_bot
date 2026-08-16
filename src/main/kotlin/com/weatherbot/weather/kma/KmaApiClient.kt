@@ -8,6 +8,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.time.Duration
 
 data class KmaForecastItem(
     val fcstDate: String,
@@ -19,7 +20,8 @@ data class KmaForecastItem(
 /** 기상청 단기예보 조회서비스(getVilageFcst) 호출을 담당한다. */
 object KmaApiClient {
     private const val BASE_URL = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
-    private val httpClient = HttpClient.newHttpClient()
+    private val REQUEST_TIMEOUT = Duration.ofSeconds(10)
+    private val httpClient = HttpClient.newBuilder().connectTimeout(REQUEST_TIMEOUT).build()
     private val json = Json { ignoreUnknownKeys = true }
 
     fun fetchForecast(serviceKey: String, baseDate: String, baseTime: String, nx: Int, ny: Int): List<KmaForecastItem> {
@@ -27,7 +29,7 @@ object KmaApiClient {
         val url = "$BASE_URL?serviceKey=$serviceKey&numOfRows=1000&pageNo=1&dataType=JSON" +
             "&base_date=$baseDate&base_time=$baseTime&nx=$nx&ny=$ny"
 
-        val request = HttpRequest.newBuilder(URI.create(url)).GET().build()
+        val request = HttpRequest.newBuilder(URI.create(url)).timeout(REQUEST_TIMEOUT).GET().build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
         if (response.statusCode() != 200) {

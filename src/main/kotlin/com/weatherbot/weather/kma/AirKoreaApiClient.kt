@@ -11,11 +11,13 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
+import java.time.Duration
 
 /** 에어코리아 시도별 실시간 측정정보 조회서비스(getCtprvnRltmMesureDnsty) 호출을 담당한다. */
 object AirKoreaApiClient {
     private const val BASE_URL = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty"
-    private val httpClient = HttpClient.newHttpClient()
+    private val REQUEST_TIMEOUT = Duration.ofSeconds(10)
+    private val httpClient = HttpClient.newBuilder().connectTimeout(REQUEST_TIMEOUT).build()
     private val json = Json { ignoreUnknownKeys = true }
 
     /** 시도 내 측정소들 중 유효한 PM10 등급(1~4)을 조회한다. */
@@ -25,7 +27,7 @@ object AirKoreaApiClient {
         val url = "$BASE_URL?serviceKey=$serviceKey&returnType=json&numOfRows=100&pageNo=1" +
             "&sidoName=$encodedSido&ver=1.0"
 
-        val request = HttpRequest.newBuilder(URI.create(url)).GET().build()
+        val request = HttpRequest.newBuilder(URI.create(url)).timeout(REQUEST_TIMEOUT).GET().build()
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
         if (response.statusCode() != 200) {
