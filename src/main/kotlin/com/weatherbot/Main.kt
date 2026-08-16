@@ -1,6 +1,7 @@
 package com.weatherbot
 
 import com.weatherbot.bot.CommandListener
+import com.weatherbot.bot.commands.OtherCityWeatherCommand
 import com.weatherbot.bot.commands.TodayWeatherCommand
 import com.weatherbot.bot.commands.WeatherConfigCommand
 import com.weatherbot.config.BotConfig
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("Main")
 
-private val commands = listOf(WeatherConfigCommand, TodayWeatherCommand)
+private val commands = listOf(WeatherConfigCommand, TodayWeatherCommand, OtherCityWeatherCommand)
 
 fun main() {
     DatabaseFactory.init()
