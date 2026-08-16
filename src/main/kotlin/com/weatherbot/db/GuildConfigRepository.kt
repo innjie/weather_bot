@@ -25,6 +25,10 @@ object GuildConfigRepository {
             .firstOrNull()
     }
 
+    fun findAll(): List<GuildConfig> = transaction {
+        GuildConfigTable.selectAll().map { it.toGuildConfig() }
+    }
+
     fun upsert(
         guildId: Long,
         channelId: Long,
